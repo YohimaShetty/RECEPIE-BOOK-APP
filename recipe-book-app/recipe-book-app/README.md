@@ -1,6 +1,116 @@
-# Recipe Book Application
+# Recipe Book Application 🍽️
 
-A full-stack web application for managing your personal recipe collection. Built with React.js, Node.js, Express, and SQLite.
+A full-stack web application to manage, share, and rate personal recipes. Built with React (frontend), Node.js + Express (backend) and SQLite (local DB).
+
+---
+
+## 🚀 Quick Start
+
+1. Clone the repository:
+   ```bash
+   git clone <your-repo-url>
+   cd recipe-book-app/recipe-book-app
+   ```
+2. Install backend dependencies:
+   ```bash
+   cd server && npm install
+   ```
+3. Install frontend dependencies:
+   ```bash
+   cd ../client && npm install
+   ```
+4. Start backend (in one terminal):
+   ```bash
+   cd server
+   npm run dev   # or `npm start`
+   ```
+5. Start frontend (in another terminal):
+   ```bash
+   cd client
+   npm start
+   ```
+
+> Backend defaults to port **5000** and frontend to **5500**. Adjust `server/.env` if needed.
+
+---
+
+## ⌨️ Commands (run in terminal)
+
+Note: commands assume you're at the repo root `recipe-book-app/recipe-book-app` unless stated otherwise. Use separate terminals for frontend and backend.
+
+- Clone repo
+  ```bash
+  git clone <your-repo-url>
+  cd recipe-book-app/recipe-book-app
+  ```
+
+- Install dependencies
+  ```bash
+  # Backend
+  cd server && npm install
+  # Frontend
+  cd ../client && npm install
+  ```
+
+- Start servers
+  ```bash
+  # Backend (dev with nodemon)
+  cd server && npm run dev
+  # Backend (production)
+  cd server && npm start
+
+  # Frontend (create-react-app)
+  cd client && npm start
+  ```
+
+- Run both (concurrently)
+  ```bash
+  # Install once: npm install -D concurrently
+  npx concurrently "npm run dev --prefix server" "npm start --prefix client"
+  ```
+
+- Server tests (Jest)
+  ```bash
+  cd server
+  npm test                          # run all server tests (NODE_ENV=test)
+  npm test -- --testPathPattern=tests/unit         # run unit tests only
+  npm test -- --testPathPattern=tests/integration  # run integration tests only
+  npm test -- --coverage             # collect coverage
+  npm test -- -t "test name"        # run tests matching name
+  ```
+
+- Client tests (React + Jest)
+  ```bash
+  cd client
+  npm test                           # run interactive test runner
+  CI=true npm test -- --coverage     # run once and collect coverage
+  ```
+
+- Cypress E2E
+  ```bash
+  # Open interactive runner
+  cd client && npx cypress open
+  # Run headless
+  cd client && npx cypress run
+  ```
+
+- Restore `server/config/database.js` (if accidentally overwritten)
+  ```bash
+  # Restore from last commit
+  git restore server/config/database.js
+  # or for older git
+  git checkout -- server/config/database.js
+  ```
+
+- Recreate DB (reset)
+  ```bash
+  # Remove local SQLite file and restart server
+  rm server/database.sqlite  # use del on Windows PowerShell if needed
+  # then start server to recreate and initialize DB
+  cd server && npm start
+  ```
+
+---
 
 ## Features
 
@@ -211,17 +321,40 @@ Make sure:
 2. Frontend is running on port 5500
 3. Check for any error messages in the terminals
 
-## Development Tips
+## 🗄️ Database notes & restoring `database.js`
+If you accidentally replaced `server/config/database.js` (this file should manage SQLite connections and export `get`, `all`, `run` helpers), restore it from git:
 
-### Running in Development Mode
-- Backend uses nodemon for auto-restart (install with `npm install -g nodemon`)
-- Run backend with: `npm run dev` instead of `npm start`
-- Frontend has hot-reload by default
+```bash
+# restore local changes from the last commit
+git restore server/config/database.js
+# or (older git versions)
+git checkout -- server/config/database.js
+```
 
-### Environment Variables
-Edit `server/.env` to change:
-- `PORT` - Server port (default: 5000)
-- `JWT_SECRET` - Secret key for JWT tokens (change in production!)
+If you prefer to manually recreate it, this is a minimal example you can use (save to `server/config/database.js`):
+
+```js
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+const dbPath = path.join(__dirname, '..', 'database.sqlite');
+
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) console.error('DB connection error', err);
+  else console.log('Connected to SQLite database');
+});
+
+module.exports = {
+  get: (sql, params = []) => new Promise((res, rej) => db.get(sql, params, (e, row) => e ? rej(e) : res(row))),
+  all: (sql, params = []) => new Promise((res, rej) => db.all(sql, params, (e, rows) => e ? rej(e) : res(rows))),
+  run: (sql, params = []) => new Promise((res, rej) => db.run(sql, params, function (e) { e ? rej(e) : res({ id: this.lastID }); }))
+};
+
+---
+
+## 🔧 Useful npm scripts
+- Backend: `npm start`, `npm run dev` (nodemon), `npm test`
+- Frontend: `npm start`, `npm test`, `npm run build`
+- E2E: `npx cypress open` / `npx cypress run`
 
 ## Future Enhancements
 
