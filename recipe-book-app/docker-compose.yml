@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   server:
-    build: ./server
+    image: yohimaa/recepie_book_app:server
     ports:
       - '5000:5000'
     volumes:
@@ -13,10 +13,7 @@ services:
     restart: unless-stopped
 
   client:
-    build:
-      context: ./client
-      args:
-        REACT_APP_API_URL: http://server:5000
+    image: yohimaa/recepie_book_app:client
     ports:
       - '5500:80'
     depends_on:
