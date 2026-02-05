@@ -1,0 +1,12 @@
+# Root .dockerignore
+node_modules
+**/node_modules
+npm-debug.log
+Dockerfile
+docker-compose.yml
+.git
+.gitignore
+.env
+.DS_Store
+coverage
+**/coverage

@@ -112,6 +112,32 @@ Note: commands assume you're at the repo root `recipe-book-app/recipe-book-app` 
 
 ---
 
+## 🐳 Docker / Containerization
+
+Build and run both services using Docker Compose (recommended):
+
+1. Build images and start containers:
+```bash
+docker-compose up --build -d
+```
+
+2. View logs:
+```bash
+docker-compose logs -f
+```
+
+3. Stop and remove containers:
+```bash
+docker-compose down
+```
+
+Notes:
+- The server exposes port **5000** and stores SQLite DB at `server/database.sqlite` (mounted as a volume).
+- The client is served by Nginx on port **5500** (mapped to container port 80).
+- For local development you can still run both apps with `npm` as before; Docker is useful for testing production-like behavior.
+
+---
+
 ## Features
 
 - ✅ User Authentication (Register/Login with JWT)
