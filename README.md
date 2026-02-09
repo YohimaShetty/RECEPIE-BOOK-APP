@@ -9,7 +9,7 @@ A full-stack web application to manage, share, and rate personal recipes. Built 
 1. Clone the repository:
    ```bash
    git clone <your-repo-url>
-   cd recipe-book-app/recipe-book-app
+   cd recipe-book-app
    ```
 2. Install backend dependencies:
    ```bash
